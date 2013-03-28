@@ -1,0 +1,26 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/cordova.js"></script>  
+		<script type="text/javascript" src="./js/functions.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+$(document).ready(function() {
+//Suppression des sessions
+localStorage.removeItem("user_id");
+localStorage.removeItem("lastname");
+localStorage.removeItem("firstname");
+localStorage.removeItem("url_avatar");
+
+alert("Votre session a été supprimée !");
+$(location).attr('href','index.html');
+	
+});
+
+</script>
+</head>
+	<body>
+
+	</body>
+</html>

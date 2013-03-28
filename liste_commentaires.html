@@ -1,0 +1,168 @@
+<!--
+----------------------------------------------------------------------------------
+@copyright: AgencyBlur / QL_appshop
+@date : 21/03/2013
+@Description :
+Page d'affichage des commentaires sur un produit
+-----------------------------------------------------------------------------------
+-->
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/cordova.js"></script>  
+		<script type="text/javascript" src="./js/functions.js"></script>
+		 <script type="text/javascript" charset="utf-8">
+		$(document).ready(function(){
+			
+			//Récupération des données sessions stockées
+			var user_id = localStorage.getItem("user_id");	//Récupération de l'id utilisateur
+			
+			//Test de session, si utilisateur non connecté, on a affiche la barre de connexion
+			if (!user_id){
+		 		$('#comment_jq').css('display', 'none');
+		 	}
+			
+			var flux='http://api.jolielist.com/product?'+location.search.substring(1); //url du flux xml
+			$('#loader').css('display', 'block');	//Affciahge d'un loader
+		 $.ajax({
+	        type: "GET",
+	         url: flux,
+	        		
+	        dataType: "xml",
+	        error:function(){
+	        	$('#loader').css('display', 'none');
+	        },
+	        complete : function(data, status) {
+	            var products = data.responseXML;
+	            var appendHtml = "";
+	 	   	//Traitement diu flux xml et recupéraion des données
+	         $(products).find('api').each(function(){
+				id_produit= $(this).children('id').text();
+	             titre = $(this).find('title').text();
+	             description = $(this).find('description').text();
+	             price = $(this).find('price').text();
+	             rank = $(this).find('rank').text();
+	             favorite_rank = $(this).find('favorite_rank').text();
+	             shared_count = $(this).find('shared_count').text();
+	             favorite_count = $(this).find('favorite_count').text();
+	             shared = $(this).find('shared').text();
+	             comments_count = $(this).find('comments_count').text();
+	             url= $(this).find('url').text();
+	             score= $(this).find('score').text();
+	             small_picture_url= $(this).find('small_picture_url').text();
+				 picture_url= $(this).find('picture_url').text();
+				 redirect_url = $(this).find('redirect_url').text();
+	             var default_avatar ="img/no_profil_picture.jpg"; //image de profil par défaut
+                
+	         	/* NB: Penser a renvoyer dans le flux les url_avatar et user_id reliés aux commentaires
+			 		comme c'est le cas pour les noms et prenoms.
+			 		Vous pourrez ensuite recupérer via le parseur les urls des avatars et les afficher
+				*/
+				$('#loader').css('display', 'none');	//Effacer le loader
+				//Récupération des commentraires de leurs auteurs
+	             $(this).find('comment').each(function(){
+	            	 
+						Destinataire = $(this).children('user').text();	//Auteur du commentaire
+						commentaire = $(this).children('content').text(); //Commentaire
+						
+						//Affichage des données
+						$("#send_mail").append('<div class="content_comment"><div class="line_form"><img src="'+default_avatar+'" class="left thumb_img" style="margin-right:10px;" /><label>'+Destinataire+'</label><br/><span class="comment">'+commentaire+'</span></div></div><div class="border_comment"></div>');
+						
+	             }); 
+				 
+			  }); 
+	         $(".name_product").append(titre); //Affichage du nom du produit
+	         
+	         	/*
+	         	Ces deux variables sont placées dans le formulaire en hidden et seront 
+	         	envoyées en POST au serveur lors de l'ajout de commentaires
+				*/
+	            
+	            $("#user_id").val(user_id);
+	            $("#product_id").val(id_produit);
+			}});
+ 
+		 
+		 //Formulaire d'envoie de commentaires
+		 $('#form_comment').on('submit', function() {
+		    	
+		        // je récupère les valeurs
+		       	var comment = $('#comment').val();
+		    	var user_id = localStorage.getItem("user_id");
+		        var product_id = $('#product_id').val();
+		        
+		        //Si formulaire vide, afficger le message
+		            if(comment == '' ) {
+		            alert('Les champs doivent  \352tres remplis');
+		            
+		        //Sinon envoyer les donnes et actualiser la page
+		        } else {
+		        	
+		        	
+		            // appel Ajax
+		            $.ajax({
+		            	
+		               url: 'http://api.jolielist.com/product/add-comment',  
+					   type: 'POST',
+		                data: $(this).serialize(),
+						dataType:'xml',
+						
+						complete : function(data, status) {
+		                	var retour = data.responseXML;
+		                	if (retour){
+		                		
+		                		 location.reload();
+							
+		                	}
+		                	else {
+		                		
+		                		
+		                		 location.reload();
+		                	}
+						}
+		            });
+
+		        }
+		        return false; // j'empêche le navigateur de soumettre lui-même le formulaire
+		    });
+		 
+		 
+	});   
+		</script>
+		
+	</head>
+	<body>
+	
+		<div id="load_menu"></div>
+		<div id="content_center" >
+		
+			<div id="load_header" class="bis" rel="Produit"></div>
+			<div class="content" >
+				<img src="img/ajax-loader2.gif" alt="loader" id="loader" style="display:none;position:absolute;top:50%;left:50%;"/>
+				<div id="send_mail">
+					<div class="line_form">
+						<span class="last_comments_text">Derniers commentaires sur le produit</span><br/>
+						<span class="name_product"></span>
+					</div>
+				
+				</div>
+				
+			</div>
+			<br style="clear:both;" />
+			<br style="clear:both;" />
+			<!-- Début du formulaire de commentaires -->
+			<div class="footer mail" id="comment_jq">
+				<form class="left" id="form_comment">
+					<input type="text" name="comment"  id="comment" placeholder="R&eacute;diger un commentaire..." />
+					<input type="hidden" name="product_id"  id="product_id"  />
+					<input type="hidden" name="user_id" id="user_id" />
+					<input type="submit" value="" id="button_send" class="right"/>
+				</form>
+				
+			</div>
+			<!-- Fin du formulaire de commentaires -->
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>

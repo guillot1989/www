@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Proto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="http://code.jquery.com/mobile/latest/jquery.mobile.min.css" />
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+ <script type="text/javascript" charset="utf-8" src="js/cordova.js"></script>  
+<script src="http://code.jquery.com/mobile/latest/jquery.mobile.min.js"></script> 
+		<script type="text/javascript">
+
+$(document).ready(function() {
+    // lorsque je soumets le formulaire
+    $('#send_mail').on('submit', function() {
+ 
+        // je récupère les valeurs
+       
+        	
+        	$('#loader_connect').css('display', 'block');
+            // appel Ajax
+            $.ajax({
+                url: 'http://api.jolielist.com/user/create', // 
+			   type: 'POST',
+                data: $(this).serialize(),
+				dataType:'xml',
+				
+				complete : function(data, status) {
+                var retour = data.responseXML;             	
+				$(retour).find("api").each(function() {
+					alert('1');
+				//Récupération des variables du flux xml
+				var success = $(this).find("success").text();
+				alert('2');
+			//	if( $(this).find("success").text())
+				//var message = $(this).find("success").text();
+				});	
+                $('#loader_connect').css('display', 'none');
+                alert('3');
+				alert(success);
+                           
+				}
+            });
+
+      
+        return false; // j'empêche le navigateur de soumettre lui-même le formulaire
+    });
+	
+	
+});
+
+</script>
+	</head>
+
+	<body>
+		<div id="load_header"></div>
+		<div class="content">
+			<form id="send_mail" action='http://api.jolielist.com/user/create' method="POST">
+				<div class="line_form">
+					<label>Nom</label><br/>
+					<input id="nom" type="text" name="lastname" placeholder="Indiquez votre nom" />
+				</div>
+				<div class="line_form">
+					<label>Prénom</label>
+					<input id="prenom" type="text" name="firstname" placeholder="Indiquez votre prénom" />
+				</div>
+				<div class="line_form">
+					<label>Pseudo</label>
+					<input id="pseudo" type="text" name="pseudo" placeholder="Choisissez un pseudo" onclick="pseudo_proposition()"/>
+				</div>
+				<div class="line_form">
+					<label>Adresse E-Mail</label>
+					<input type="email" name="email" placeholder="Indiquez votre adresse E-Mail" />
+				</div>
+
+				<div class="line_form">
+					<label>Mot de passe</label>
+					<input type="password" name="password" placeholder="Choisissez un mot de passe" />
+				</div>
+	
+				<input type="submit" id="button_send" class="right"value="envoyer" />
+				<div  style="height: 26px;text-align: center; ">
+				<img src="img/ajax-loader.gif" alt="loader" id="loader_connect" style="display:none;margin:auto;"/>
+   			 </div>
+			</form>
+		</div>
+		<div class="footer inscription">
+			<span class="left italic" style="font-size:12px;margin-top:13px;margin-left:5px;width:250px;">En vous inscrivant, vous acceptez les Conditions générales d'utilisation</span>
+			
+		</div>
+
+	</body>
+</html>

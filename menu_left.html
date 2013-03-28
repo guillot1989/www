@@ -1,0 +1,69 @@
+        <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/cordova.js"></script>
+		<script>
+			$(document).ready(function(){
+				$('#search_menu_left').click(function(){
+					document.location.href = "resultat_recherche.html";
+				});
+				
+				
+				var user_id = localStorage.getItem("user_id");
+				//Si session existante, rediriger
+				if(!user_id){
+					
+					$('#jq_deconnexion').remove();
+				}
+				
+			});
+		</script>
+
+		<div class="menu_left">
+			<div class="search">
+				<form action="">
+					<span class="picto_search"></span>
+					<input type="text" placeholder="Rechercher un produit" id="search_menu_left" />
+					<span class="picto_erase"></span>
+				</form>
+			</div>
+			
+			
+			<div class="menu_left_line" id="jq_deconnexion">
+				<div class="picto_menu_left_puce"></div>
+				<p><a href="deconnexion.html">D&eacute;connexion</a></p>
+			</div>
+
+			<div class="menu_left_line">
+				<div class="picto_menu_left_puce"></div>
+				<p><a href="newsfeed.html">Fil d'actualit&eacute;</a></p>
+			</div>
+			<div class="menu_left_line">
+				<div class="picto_menu_left_puce"></div>
+				<p><a href="timeline-decouvrir.html">D&eacute;couvrir</a></p>
+			</div>
+			<div class="menu_left_line">
+				<div class="picto_menu_left_puce"></div>
+				<p><a href="profil.html">Mon profil</a></p>
+			</div>
+			<div class="menu_left_line">
+				<div class="picto_menu_left_puce"></div>
+				<p><a href="favoris.html">Favoris</a></p>
+			</div>
+			<div class="menu_left_line activ">
+				<div class="picto_menu_left_puce"></div>
+				<p>Utilisateurs</p>
+
+				<div class="clear"></div>
+
+				<ul>
+					<li>Rechercher des personnes</li>
+					<li>Importer des amis</li>
+				</ul>
+
+			</div>
+			<div class="menu_left_line">
+				<div class="picto_menu_left_puce"></div>
+				<p><a href="parametre_appli.html">Param&egrave;tres</a></p>
+			</div>
+
+		</div>
+		

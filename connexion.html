@@ -1,0 +1,165 @@
+<!--
+----------------------------------------------------------------------------------
+@copyright: AgencyBlur / QL_appshop
+@date : 21/03/2013
+@Description :
+Page de connexion
+-----------------------------------------------------------------------------------
+-->
+<html>
+	<head>
+		<link rel="stylesheet" href="css/style.css">
+		<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>-->
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/cordova.js"></script>  
+		<script type="text/javascript" src="./js/functions.js"></script>
+		<script>
+			$(document).ready(function(){
+				
+			//Récupération de l'id utilisateur si existant
+			var user_id = localStorage.getItem("user_id");
+			
+			//Si session existante, rediriger
+			if(user_id)
+				$(location).attr('href','timeline-decouvrir.html');//Rédiriger vers Timeline découvrir
+			
+			
+				tailleConnexion();
+				$(window).resize(function(){
+					tailleConnexion();
+				});
+				function tailleConnexion(){
+					var height_connexion = $(window).height() - 45;
+					$(".connexion").css('height',height_connexion+"px");
+				}
+				
+				$('.connexion_compte').click(function(){
+					$('.connexion .connexion_buttons').css('height','380px');
+					$('.form_connexion').show();
+					$('.footer.fconnexion').show();
+				});
+				
+				
+			    // lorsque je soumets le formulaire
+			    $('#button_send').click(function(){
+			 
+			        // je récupère les valeurs
+			       	var email = $('#email').val();
+			        var password = $('#password').val();
+			 
+			            if(email == '' || password == '') {
+			            alert('Les champs doivent êtres remplis');
+			        } else {
+			        	
+			              	$('#loader_connect').css('display', 'block');
+			            // appel Ajax
+			            $.ajax({
+			                url: 'http://api.jolielist.com/user/login', // 
+						   type: 'POST',
+						   data: "email="+$("#email").val()+"&password="+$("#password").val(),
+							dataType:'xml',
+							
+							complete : function(data, status) {
+			                	var retour = data.responseXML;
+			                	if (retour){
+								$(retour).find("api").each(function() {
+								//Récupération des variables du flux xml
+				                    var id = $(this).find("user_id").text();
+				                    var lastname = $(this).find("lastname").text();
+				                    var firstname = $(this).find("firstname").text();
+				                    var url_avatar = $(this).find("url_avatar").text();
+				                    
+				                    //Stockages des variables du flux xml
+				                    localStorage.setItem("user_id", id);
+				                    localStorage.setItem("lastname", lastname);
+				                    localStorage.setItem("firstname", firstname);
+				                    localStorage.setItem("url_avatar", url_avatar);
+				                    var value = localStorage.getItem("firstname");
+				                	$('#loader_connect').css('display', 'none');
+				                 
+				                   $(location).attr('href','timeline-decouvrir.html'); //rediriger vers timeline Decouvrir
+				                  
+			                   
+			                    });
+			                	}
+			                	else {
+			                		
+			                		alert("Vous n'avez pas entré les bons identifiants"); //Afficher message
+			                		$('#loader_connect').css('display', 'none'); //Effacer le loader
+			                					                				                		
+			                	}
+							}
+			            });
+
+			        }
+			        return false; // j'empêche le navigateur de soumettre lui-même le formulaire
+			    });
+				
+				
+				
+				
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="load_menu"></div>
+		<div id="content_center">
+		
+		
+			<div id="load_header" class="no_connect" rel="Connexion"></div>
+			<div class="connexion">
+				<div id="inscription" class="pop_up info"  style="top: 0px; padding-top: 56px;">
+					<a href="inscription.html" style="Color:#fff; padding-left: 53px;">Inscription</a>
+				</div>
+				
+				
+				
+				
+				<img src="img/background_connexion.jpg">
+	
+				<div class="connexion_buttons">
+					<div class="connexion_facebook">
+						<div class="picto_facebook"></div>
+						<p>Se connecter  avec Facebook</p>
+					</div>
+				
+					<div class="connexion_twitter">
+						<div class="picto_twitter"></div>
+						<p>Se connecter  avec Twitter</p>
+					</div>
+				
+					<div class="connexion_compte">
+						<div class="picto_compte"></div>
+						<p>Se connecter  avec mon compte</p>
+					</div>
+					
+					<div class="form_connexion">
+						<form id="form">
+							<div class="line_form">
+								<label>Adresse E-Mail *</label>
+								<input autocomplete="off" id="email" type="email" name="email" placeholder="Indiquez votre adresse E-Mail" />
+							</div>
+							<div class="line_form">
+								<label>Mot de passe *</label>
+								<input autocomplete="off" id="password" type="password" name="password" placeholder="Saisissez votre mot de passe" />
+							</div>
+						</form>
+							
+					</div>
+					
+				</div>
+	
+			</div>
+			<div id='footer_connexion'class="footer fconnexion">
+			
+			<!-- Loader ajax -->
+			<img src="img/ajax-loader.gif" alt="loader" id="loader_connect" style="display:none;width:auto;margin:auto"/>
+			
+			<div id="button_send" class="right"></div>
+			</div>
+			
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>

@@ -1,0 +1,94 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/functions.js"></script>
+	</head>
+
+	<script>
+		
+	$(document).ready(function(){	
+		
+	$('#search_nav').keyup( function(){
+		var value = $('#search_nav').val();
+		
+
+	        $.ajax({
+	            type: "GET",
+	            url: "http://api.jolielist.com/user/search?name="+value,
+	            dataType: "xml",
+	            complete : function(data, status) {
+	                var products = data.responseXML;
+	                var appendHtml = "";
+	                $(products).find('user').each(function(){
+	                	id_user= $(this).find('id').text();
+	                	
+	                	name = $(this).find('name').text();
+	                	 $("#jq_user").append('<div class="user_list_line"><a href="profil.html?user_id='+id_user+'"><img class="picto_user_list_avatar" src=""><p>'+name+'</p><div class="picto_user_list_puce"></div></a></div>');
+	                });
+	               // $("#jq_nom").append('<p>'+name+'</p>');
+	               
+	               
+	            }});    
+
+	});
+	});   
+		
+		
+		
+		</script>
+
+
+
+	<body>
+		<div id="load_menu"></div>
+		<div id="content_center">
+			<div id="load_header" rel="Liste utilisateurs"></div>
+			<div class="user_list">
+				<div class="search">
+					<form action="">
+						<span class="picto_search"></span>
+						<input type="text" placeholder="Rechercher une personne" id="search_nav">
+						<span class="picto_erase"></span>
+					</form>
+				</div>
+				
+				
+				<div id="jq_user"></div>
+				
+	
+			<!-- 	<div class="user_list_line">
+					<img class="picto_user_list_avatar" src="">
+					<pG>ertrude</p>
+					<div class="picto_user_list_puce"></div>
+				</div>
+	
+				<div class="user_list_line">
+					<img class="picto_user_list_avatar" src="">
+					<p>Gertrude</p>
+					<div class="picto_user_list_puce"></div>
+				</div>
+	
+				<div class="user_list_line">
+					<img class="picto_user_list_avatar" src="">
+					<p>Gertrude</p>
+					<div class="picto_user_list_puce"></div>
+				</div>
+	
+				<div class="user_list_line">
+					<img class="picto_user_list_avatar" src="">
+					<p>Gertrude</p>
+					<div class="picto_user_list_puce"></div>
+				</div>
+	
+				<div class="user_list_line">
+					<img class="picto_user_list_avatar" src="">
+					<p>Gertrude</p>
+					<div class="picto_user_list_puce"></div>
+				</div> -->
+	
+			</div>
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>

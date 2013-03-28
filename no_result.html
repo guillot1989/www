@@ -1,0 +1,53 @@
+<script>
+$(document).ready(function(){
+	$.ajax({
+		type: "GET",
+		url: "http://api.jolielist.com/timeline-discover",
+		dataType: "xml",
+		complete : function(data, status) {
+			var products = data.responseXML;
+			var appendHtml = "";
+			var i = 0;
+			var j = 1;
+			$(products).find('product').each(function(){
+				i = i+1;
+				var id_produit= $(this).children('id').text();
+				var titre = $(this).find('title').text();
+				var description = $(this).find('description').text();
+				var price = $(this).find('price').text();
+				var rank = $(this).find('rank').text();
+				var favorite_rank = $(this).find('favorite_rank').text();
+				var shared_count = $(this).find('shared_count').text();
+				var favorite_count = $(this).find('favorite_count').text();
+				var shared = $(this).find('shared').text();
+				var comments_count = $(this).find('comments_count').text();
+				var url= $(this).find('url').text();
+				var score= $(this).find('score').text();
+				var small_picture_url= $(this).find('small_picture_url').text();
+				var picture_url= $(this).find('picture_url').text();
+				var redirect_url = $(this).find('redirect_url').text();
+                
+				$("#timeline-no-result").append($("<div id='"+i+"'>").load("item_produit.html", function(){
+                	var idos = "#"+j;
+                 	$(idos+" .jq_title").append(titre);
+                 	$(idos+" .product_img").attr("src",picture_url);
+                 	$(idos+" .product_href").attr("href","produit.html?user_id=1&product_id="+id_produit+"");
+                 	$(idos+" .price").append(price+"€");
+               		$(idos+" .title_creator").remove();
+                 	j = j+1;
+                 }));
+                 
+             });
+             
+         }}); 
+
+	});
+
+</script>
+<div class="no_result">
+	<h4>Aucun</h4>
+	<span>r&eacute;sultat trouv&eacute;.</span></br/>
+	<br/>
+	<span class="italic">D&eacute;couvrez nos autres produits...</span>
+</div>
+<div id="timeline-no-result"></div>

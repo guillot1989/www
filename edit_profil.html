@@ -1,0 +1,66 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/functions.js"></script>
+	</head>
+
+	<body>
+		<div id="load_menu"></div>
+		<div id="content_center">
+			<div id="load_header" class="bis" rel="Edition profil"></div>
+			<div class="edit_profil">
+	
+				<form method="POST" name="form" action=""  onsubmit="" class="edition">
+			
+					<div class="line_form">
+						<label>Nom</label>
+						<input type="text" name="firstname" placeholder="Saisissez votre nom" required >
+					</div>
+	
+					<div class="line_form">
+						<label>Prénom</label>
+						<input type="text" name="firstname" placeholder="Saisissez votre prénom" required>
+					</div>
+	
+					<div class="line_form">
+						<label>Pseudo</label>
+						<input type="text" name="pseudo" placeholder="Saisissez votre pseudo"required>
+					</div>
+	
+					<div class="line_form">
+						<label>Mot de passe actuel</label>
+						<input pattern=".{8,12}" type="password" placeholder="8 à 12 caractères" name="password" required title="Le mot de passe doit être composé de 8 à 12 caractères">
+					</div>
+	
+					<div class="line_form">
+						<label>Nouveau mot de passe</label>
+						<input pattern=".{8,12}" type="password" placeholder="8 à 12 caractères"  name="confirm_password" required>
+					</div>
+	
+					<div class="line_form">
+						<label>Confirmer nouveau mot de passe</label>
+						<input pattern=".{8,12}" type="password" placeholder="8 à 12 caractères"  name="confirm_password" required>
+					</div>
+	
+					<div class="line_form">
+						<label>Modifier votre description</label>
+						<textarea>Description bla bla bla</textarea>
+					</div>
+	
+					<div class="line_form">
+						<label>Modifier votre avatar</label>
+						<input pattern=".{8,12}" type="file" placeholder="Confirmez le mot de passe"  name="confirm_password" required>
+					</div>
+	
+				</form>
+	
+			</div>
+	
+			<div class="footer_form">
+				<div id="button_send" class="right"></div>
+			</div>
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>

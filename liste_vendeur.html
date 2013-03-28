@@ -1,0 +1,89 @@
+<!--
+----------------------------------------------------------------------------------
+@copyright: AgencyBlur / QL_appshop
+@date : 21/03/2013
+@Description :
+Cette page affiche la liste des revendeurs d'un produit.
+Les données sont récupérées en GET passant l'id du produit à http://api.jolielist.com/product
+-----------------------------------------------------------------------------------
+-->
+<html>
+	<head>
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/functions.js"></script>
+	
+	<script>
+	$(document).ready(function(){
+		
+		$("#revendeur").click(function() {
+			$('#loader').css('display', 'block');
+			
+			});
+		
+			
+		var flux='http://api.jolielist.com/product?'+location.search.substring(1);
+		$('#loader').css('display', 'block');	//Affciahge d'un loader
+	 $.ajax({
+        type: "GET",
+         url: flux,
+        		
+        dataType: "xml",
+        error:function(){
+        	$('#loader').css('display', 'none');
+        },
+        complete : function(data, status) {
+            var products = data.responseXML;
+            var appendHtml = "";
+ 
+   			//Traitement et affichage des doonnées
+            $(products).find('api').each(function(){
+			id_produit= $(this).find('id').text();		 //Id du produit
+			redirect_url = $(this).find('redirect_url').text();  //url du revendeur du produit
+			price = $(this).find('price').text(); 
+			$(this).find('shop').each(function(){
+			  revendeur = $(this).children('name').text();  //Nom du revendeur du produit
+			 				
+			  }); 
+			 
+		  }); 
+            $('#loader').css('display', 'none');	//Effacer le loader
+            
+            //Affichage html des données
+            appendHtml += '<div class="collection_line" id="click"><a href='+redirect_url+'><p id="jq_revendeur">'+revendeur+'</p><div class="picto_collection_line"></div> <p>'+price+' &euro; </p></a></div>';
+			$("#revendeur").append(appendHtml);
+			
+			
+		}});	
+
+}
+            );   
+	</script>
+	
+	</head>
+
+	<body>
+	
+	
+	
+		<div id="load_menu"></div>
+		<div id="content_center">
+		
+		
+		
+		
+			<div id="load_header" class="bis" rel="Liste vendeurs"></div>
+			<div class="list_collection">
+			
+				<!-- Loader -->
+				<img src="img/ajax-loader2.gif" alt="loader" id="loader" style="display:none;position:absolute;top:50%;left:50%;"/>
+				<!-- Loader -->	
+					
+				<div id="revendeur"></div>
+			</div>
+			
+			
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>

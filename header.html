@@ -1,0 +1,32 @@
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/cordova.js"></script>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+
+	var user_id = localStorage.getItem("user_id");
+
+	//Si session existante, rediriger
+	if(user_id){
+		
+		$('#connect').remove();
+		$('.pop_up.info').css('top','0');
+		$('.pop_up.info').css('height','0');
+	}
+	
+	
+	
+});
+</script>
+<div class="header">
+	
+	<div class="button_left closed"></div>
+	<div class="button_right closed"></div>
+
+	<div class="title_header">Connexion</div>
+
+</div>
+<div id="connect" class="pop_up info"  style="top: 0px; padding-top: 56px; ">
+	<a href="connexion.html" style="Color:#fff; padding-left: 53px;">Se connecter</a>
+</div>
+
+

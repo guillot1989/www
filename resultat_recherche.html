@@ -1,0 +1,121 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/functions.js"></script>
+		<script>
+			$(document).ready(function(){
+				// Pär défaut, pas de résultats
+				$('.timeline_no_result').load('no_result.html');
+				
+				// Gérer l'affichage de la croix de suppression au focus
+				$("#search_nav").focus(function(){
+					$('.picto_erase').show();
+					$('#dynamic_search_result_container').show();
+				});
+				$("#search_nav").blur(function(){
+					$('.picto_erase').hide();
+					$('#dynamic_search_result_container').hide();
+				});
+				
+				// Suppression du texte au click sur la croix de suppression
+				$('#search_nav .picto_erase').live('click', function(){
+					$('#search_nav').val('');
+					$("#dynamic_search_result_container").empty(); // vide la div
+					$("#result_autocompletion").empty(); // vide la div
+				});
+				
+				// Gérer le retour à la page précédente lors du clic sur annuler
+				$('.button_cancel').click(function(){
+					parent.history.back();
+				});
+				
+				// Autocomplétion
+				$('#search_nav').keyup(function(){
+					$("#result_autocompletion").empty(); // vide la div
+					$("#result_autocompletion").css('display', 'block');
+					var value = $('#search_nav').val();
+					if(value.length > 2){
+						get_list(value);
+						setTimeout(function(){$("#result_autocompletion").empty()},4000);
+					}
+				});
+				
+				// Function get_list
+				function get_list(value){
+					// Initialisation des tableaux
+					var images = new Array();
+					var noms = new Array();
+					var ids = new Array();
+					
+					// Récupération des résultats de l'API
+					$.ajax({
+						type : 'GET',
+						url : 'http://api.jolielist.com/search',
+						data : 'query='+value,
+						dataType : 'xml',
+						complete : function(data){
+							var produits = data.responseXML;
+							var default_image ="img/no_image.jpg";
+							
+							if($(produits).find('product').length > 0){
+								$('.results').empty();
+								$('.timeline_no_result').empty();
+								//$('#result_autocompletion').append('<ul>');
+								// Parsage des produits
+								var i = 0;
+								$(produits).find('product').each(function(){					                   
+				                    //Fonction qui traite si l'url image est cassée et la remplace par une image par défaut.
+				                    var req = new XMLHttpRequest();
+				                    var picture_url = $(this).find('picture').text();
+				                    req.open('GET', picture_url, false);
+				                    req.send();
+				                    if(req.status!=200)
+				                     	picture_url=default_image;
+									i++;
+									if(i%2 == 0){
+										var oddOrEven = 'odd';
+									}else{
+										var oddOrEven = 'even';
+									}
+									//$('#result_autocompletion').append("<li onclick=\"document.getElementById('search_nav').value = this.innerHTML; get_list(); $('#result_autocompletion').css('display', 'none');\">"+$(this).find('name').text()+"</li>");
+									$('.results').append('<a href="produit.html?user_id=1&product_id='+$(this).find('id').text()+'"><img class="result '+oddOrEven+'" src="'+picture_url+'" /></a>');
+								});
+								//$('#result_autocompletion').append('</ul>');
+							}else{
+								$('.results').empty();
+								$('.timeline_no_result').empty();
+								$('.timeline_no_result').load('no_result.html');
+							}
+						}
+					});
+				}
+			});
+		</script>
+<body>
+	<div id="load_menu"></div>
+	<div id="content_center">
+		<div id="load_header" rel="Résultat recherche"></div>
+		<div class="content">
+			<div class="search">
+				<form action="" class="left" style="width:230px;">
+					<span class="picto_search"></span>
+					<input type="text" placeholder="Rechercher un produit" id="search_nav">
+					<span class="picto_erase"></span>
+				</form>
+				<div class="button_cancel right"></div>
+			</div>
+			<!--<div id="result_autocompletion"></div>-->
+			
+			<!--<div id="liste_products_results">
+				<span class="left">Liste des produits trouvés</span>
+				<img class="right" src="img/arrow_top.png" />
+				<div class="clear"></div>
+			</div>-->
+			
+			<div class="results"></div>
+			<div class="timeline_no_result"></div>
+		</div>
+	</div>
+	<div id="load_notifs"></div>
+</body>

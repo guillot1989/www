@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Proto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="http://code.jquery.com/mobile/latest/jquery.mobile.min.css" />
+ <link rel="stylesheet" href="css/style.css">
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+ <script type="text/javascript" charset="utf-8" src="js/cordova.js"></script>  
+<script src="http://code.jquery.com/mobile/latest/jquery.mobile.min.js"></script> 
+<script type="text/javascript" charset="utf-8">
+
+$(document).ready(function() {
+    // lorsque je soumets le formulaire
+    $('#form_connexion').on('submit', function() {
+ 
+        // je récupère les valeurs
+       	var email = $('#email').val();
+        var password = $('#password').val();
+ 
+            if(email == '' || password == '') {
+            alert('Les champs doivent êtres remplis');
+        } else {
+        	
+        	$('#loader_connect').css('display', 'block');
+            // appel Ajax
+            $.ajax({
+                url: 'http://api.jolielist.com/user/login', // 
+			   type: 'POST',
+                data: $(this).serialize(),
+				dataType:'xml',
+				
+				complete : function(data, status) {
+                	var retour = data.responseXML;
+                	if (retour){
+					$(retour).find("api").each(function() {
+					//Récupération des variables du flux xml
+                    var id = $(this).find("user_id").text();
+                    var lastname = $(this).find("lastname").text();
+                    var firstname = $(this).find("firstname").text();
+                    var url_avatar = $(this).find("url_avatar").text();
+                    
+                    //Stockages des variables du flux xml
+                    localStorage.setItem("user_id", id);
+                    localStorage.setItem("lastname", lastname);
+                    localStorage.setItem("firstname", firstname);
+                    localStorage.setItem("url_avatar", url_avatar);
+                    var value = localStorage.getItem("firstname");
+                	$('#loader_connect').css('display', 'none');
+                   //alert("Bienvenue "+firstname+" "+lastname);
+                   $(location).attr('href','timeline-decouvrir.html');
+                  
+                   
+                    });
+                	}
+                	else {
+                		
+                		alert("Vous n'avez pas entr&egrave les bons identifiants");
+                		$('#loader_connect').css('display', 'none');
+                		//localStorage.removeItem("key");
+                	}
+				}
+            });
+
+        }
+        return false; // j'empêche le navigateur de soumettre lui-même le formulaire
+    });
+	
+	
+});
+
+</script>
+</head>
+
+<body>
+
+<div data-role="page" id="mainPage">
+
+    <div data-role="header">
+        <h1>Connexion</h1>
+    </div>
+	
+	<form id="form_connexion">
+	
+	Login: <input type="text" name="email" id="email" />
+	Password: <input type="password" name="password" id="password" />
+	<input type="submit" value="Connexion" />
+	<div  style="height: 26px;text-align: center; ">
+   	 <img src="img/ajax-loader.gif" alt="loader" id="loader_connect" style="display:none;margin:auto;"/>
+    </div>
+	</form>
+	
+
+</div>
+
+</body>
+</html>

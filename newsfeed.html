@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		 <script type="text/javascript" charset="utf-8" src="js/cordova.js"></script>  
+		<script type="text/javascript" src="./js/functions.js"></script>
+		<script type="text/javascript">
+		
+		$(document).ready(function() {
+		
+			//Récupération des données sessions stockées
+			var user_id = localStorage.getItem("user_id");
+			var lastname = localStorage.getItem("lastname");
+			var firstname = localStorage.getItem("firstname");
+			var url_avatar = localStorage.getItem("url_avatar");
+			
+		   	$('#loader_connect').css('display', 'block');
+            // appel Ajax
+            $.ajax({
+               url: 'http://api.jolielist.com/news-feed?user_id='+user_id, // 
+			   type: 'GET',
+                data: $(this).serialize(),
+				dataType:'xml',
+				
+				complete : function(data, status) {
+               	var retour = data.responseXML;
+               	if (retour){
+               		$('#loader_connect').css('display', 'none');
+               	  	$(" #hello").append("Bienvenue "+firstname+" "+lastname);
+			
+                	}
+                	else {
+                		
+                		alert("Erreur");
+                		$('#loader_connect').css('display', 'none');
+                		//localStorage.removeItem("key");
+                	}
+				}
+            });	
+			
+		});
+		
+		</script>
+	</head>
+	<body>
+		<div id="load_menu"></div>
+		<div id="content_center">
+			<div id="load_header" rel="Fil d'actualité"></div>
+			<div class="content">
+				<img src="img/jolielist.png" alt="Logo" class="left" />
+				<div class="right">
+					<a href="#"><img src="img/fb.png" /></a>
+					<a href="#"><img src="img/flux.png" /></a>
+					<a href="#"><img src="img/twitter.png" /></a>
+				</div>
+					<img src="img/ajax-loader2.gif" alt="loader" id="loader_connect" style="display:none;position:absolute;top:50%;left:50%;"/>
+				<h1 id="hello"></h1>
+				
+			</div>
+		
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>

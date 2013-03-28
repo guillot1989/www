@@ -1,0 +1,185 @@
+<!--
+----------------------------------------------------------------------------------
+@copyright: AgencyBlur / QL_appshop
+@date : 21/03/2013
+@Description :
+Page d'inscription avec traitement des champs
+Les données sont envoyées en POST vers l'url: http://api.jolielist.com/user/create
+Renvoie 1 en cas de succès
+Renvoie 0 sinon accompagné du message d'erreur
+En cas de succcès, rediriger vers la Timeline Découvrir
+-----------------------------------------------------------------------------------
+-->
+<html>
+	<head>
+		<link rel="stylesheet" href="css/style.css">
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="./js/functions.js"></script>
+		<script>
+			$(document).ready(function(){
+			     $("#button_send").click(function() {
+			
+			        // je récupère les valeurs
+			       	var valid=true; //booléen qui autorisera l'envoie des données
+			      	var email = $('#email').val(); //Valeur du champs email
+       				var pseudo = $('#pseudo').val();	//Valeur du champs pseudo
+       				var password = $('#password').val(); //Valeur du champs mot de password
+       				var email_confirm = $('#email_confirm').val(); //Valeur du champs confirmation email
+       				var password_confirm = $('#password_confirm').val();	//Valeur du champs confirmation password
+       				
+       		     //Si à minima les champs obligatoires ne sont pas remplis
+       		     	if(pseudo == '' && email=='' && password=='') {	
+       		    	 
+       		    	 alert("Merci de remplir les champs obligatoires.");
+					valid=false; //Mettre valide à faux
+					return false; //sortir du programme
+       		     }
+       		        
+       		       
+       		      //Si le champ pseudo est vide
+       		     	if(pseudo == '') {	
+       		    	 
+       		    	 alert("Renseignez un pseudo.");
+       		    	 valid=false;	 //Mettre valide à faux
+					return false;	 //sortir du programme
+       		     }
+       		    //Si le champs mail est vide 	
+       		   	if(email == '') {	
+      		    	 
+      		    	 alert("Veuillez renseigner une adresse email valide.");
+      		    	 valid=false;
+      		    	return false;
+      		     }
+      		    //Vérification d'une adresse mail valide    
+       			var reg = new RegExp('^[a-z0-9]+([_|\.|-]{1}[a-z0-9]+)*@[a-z0-9]+([_|\.|-]{1}[a-z0-9]+)*[\.]{1}[a-z]{2,6}$', 'i');
+       			if(!$("#email").val() || !reg.test($('#email').val())){
+					alert("Veuillez renseigner une adresse email valide.");
+					valid = false; //Mettre valide à faux
+					return false;	//sortir du programme
+					}
+       			
+       			//Vérification de mails identiques
+       		  	if(email != email_confirm) {	
+     		    	 
+     		    	 alert("Adresses emails non identiques.");
+     		    	 valid=false; //Mettre valide à faux
+     		    	return false;	//sortir du programme
+     		     }
+       			
+       			
+       			//Vérification de saisie de mot de passe
+       			if(password == '') {	
+     		    	 
+     		    	 alert("Veuillez saisir un mot de passe.");
+     		    	 valid=false;	//Mettre valide à faux
+     		    	return false; //sortir du programme
+     		     }
+       			
+       			
+       			//Vérification de mots de passe identiques
+       		  	if(password != password_confirm) {	
+     		    	 
+     		    	 alert("Mots de passe non identiques.");
+     		    	 valid=false;	//Mettre valide à faux
+     		    	return false; //sortir du programme
+     		     }
+       			
+       			//Si valide est VRAI(true), on peut procèder à l'envoie des données
+       		        	if(valid==true){
+			        	$('#loader_connect').css('display', 'block');//Afficher un loader
+			        	
+			            // appel Ajax
+			            $.ajax({
+			               url: 'http://api.jolielist.com/user/create', // 
+						   type: 'POST',
+						   data: "email="+$("#email").val()+"&pseudo="+$("#pseudo").val()+"&password="+$("#password").val()+"&lastname="+$("#nom").val()+"&firstname="+$("#prenom").val(),
+							dataType:'xml',
+							
+							complete : function(data, status) {
+			                var retour = data.responseXML;
+			                
+							$(retour).find("api").each(function() {
+							
+							var etat = $(this).find("success").text();
+							var message = $(this).find("message").text();
+						
+							 if(etat=="1")
+				             	$(location).attr('href','timeline-decouvrir.html');
+							 
+				              if(etat=="0") 
+				              	alert(message);
+							
+							});	
+							
+			                $('#loader_connect').css('display', 'none');
+			                  
+							}
+			            });
+
+			     }
+			    });
+			});
+		</script>
+		<script type="text/javascript">
+		
+		/* Cette fonction propose un pseudo qui est la concaténation du prenom et du nom */
+		
+		function pseudo_proposition(){
+			var prenom =document.getElementById("prenom").value;
+			var nom =document.getElementById("nom").value;
+		      		       	
+			  	document.getElementById("pseudo").value=prenom+" "+nom;
+				
+		}
+		
+		</script>
+	</head>
+
+	<body>
+		<div id="load_menu"></div>
+		<div id="content_center">
+			<div id="load_header" class="bis" rel="Inscription"></div>
+			<div class="content">
+				<form id="send_mail" >
+					<div class="line_form">
+						<label>Prénom</label>
+						<input autocomplete="off" id="prenom" type="text" name="firstname" placeholder="Indiquez votre prénom" onKeyUp="pseudo_proposition();" />
+					</div>
+					<div class="line_form">
+						<label>Nom</label><br/>
+						<input autocomplete="off" id="nom" type="text" name="lastname" placeholder="Indiquez votre nom" onKeyUp="pseudo_proposition();"/>
+					</div>
+					
+					<div class="line_form" onclick="pseudo_proposition();">
+						<label>Pseudo *</label>
+						<input autocomplete="off" id="pseudo" type="text" name="pseudo" placeholder="Choisissez un pseudo" />
+					</div>
+					<div class="line_form">
+						<label>Adresse E-Mail *</label>
+						<input autocomplete="off" id="email" type="email" name="email" placeholder="Indiquez votre adresse E-Mail" onKeyUp ="checkmail(this.value);"/>
+					</div>
+					<div class="line_form">
+						<label>Confirmation adresse E-Mail</label>
+						<input id="email_confirm" autocomplete="off" type="email" name="" placeholder="Confirmez votre adresse E-Mail" />
+					</div>
+					<div class="line_form">
+						<label>Mot de passe *</label>
+						<input autocomplete="off" id="password" type="password" name="password" placeholder="Choisissez un mot de passe" />
+					</div>
+					<div class="line_form">
+						<label>Confirmation mot de passe</label>
+						<input autocomplete="off" id="password_confirm" type="password" name="" placeholder="Confirmer votre mot de passe" />
+					</div>
+					<div  style="height: 26px;text-align: center; ">
+	   	 			<img src="img/ajax-loader.gif" alt="loader" id="loader_connect" style="display:none;margin:auto;"/>
+	   			 </div>
+				</form>
+			</div>
+			<div class="footer inscription">
+				<span class="left italic" style="font-size:12px;margin-top:13px;margin-left:5px;width:250px;">En vous inscrivant, vous acceptez les Conditions générales d'utilisation</span>
+				<div id="button_send" class="right"></div>
+			</div>
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>

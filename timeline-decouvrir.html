@@ -1,0 +1,105 @@
+<!--
+----------------------------------------------------------------------------------
+@copyright: AgencyBlur / QL_appshop
+@date : 21/03/2013
+@Description :
+Ce fichier est la page Timline Découvrir
+-----------------------------------------------------------------------------------
+-->
+
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/functions.js"></script>
+</head>
+		
+		<script type="text/javascript">
+		/*
+		Fonction qui au chargement du document récupère les données xml 
+		les traite et porcède à l'affichage de celles-ci
+		
+		*/
+			$(document).ready(function(){
+		//Récupération des données en Ajex avec la méthode GET		
+		 $.ajax({
+            type: "GET",
+            url: "http://api.jolielist.com/timeline-discover", //url du flux xml
+            dataType: "xml",
+            complete : function(data, status) {
+                var products = data.responseXML;
+                var appendHtml = "";
+                var i = 0;	//compteur de produits
+                var j = 1;	//compteur de produits
+                $(products).find('product').each(function(){
+					i = i+1;
+                    
+					//Récupération des champs du flux xml
+                    var id_produit= $(this).children('id').text();	//id du produit
+                    var titre = $(this).find('title').text();		//titre du produit
+					var description = $(this).find('description').text();	//description du produit
+					var price = $(this).find('price').text();	//prix du produit
+					var rank = $(this).find('rank').text();		//ordre d'affichage du produit
+					var favorite_rank = $(this).find('favorite_rank').text();	// du produit
+					var shared_count = $(this).find('shared_count').text();	// du produit
+					var favorite_count = $(this).find('favorite_count').text();	//id du produit
+					var shared = $(this).find('shared').text();	//nombre de partage du produit
+					var comments_count = $(this).find('comments_count').text(); //nombre de commentaires sur le produit
+					var small_picture_url= $(this).find('small_picture_url').text(); //image miniature du produit
+					var picture_url= $(this).children('picture_url').text(); //image du produit
+                    
+				
+					var redirect_url = $(this).find('redirect_url').text();	//url du marchand du produit
+                 
+					var default_image ="img/no_image.jpg";
+                   
+                	if(picture_url=="")
+						picture_url=default_image;
+                    //Fonction qui traite si l'url image est cassée et la remplace par une image par défaut.
+                    var req = new XMLHttpRequest();
+                    req.open('GET', picture_url, false);
+                    req.send();
+                    if(req.status!=200)
+                     	picture_url=default_image;
+                                        
+                    //Insertion des données dans la page item_produit.html
+                    $("#container_products").append($("<div id='"+i+"'>").load("item_produit.html", function(){
+                    	var idos = "#"+j;
+                    	//alert("PENDANT id recherché : "+idos);
+                    	$(idos+" .jq_title").append(titre);
+                    	$(idos+" .product_img").attr("src",picture_url);
+                    	$(idos+" .href_marchand").attr("href",redirect_url);
+                    	$(idos+" .product_href").attr("href","produit.html?user_id=1&product_id="+id_produit+"");
+                    	$(idos+" .lien_produit").attr("href","produit.html?user_id=1&product_id="+id_produit+"");
+                    	$(idos+" .price").append(price+"€");
+                   		$(idos+" .title_creator").remove();
+                    	j = j+1;
+                    }));
+                    
+                });
+                
+            }}); 
+			
+			}
+          );
+
+		</script>
+	
+	<body>
+		<div id="load_menu"></div>
+		<div id="content_center">
+			<div id="load_header" rel="Découvrir"></div>
+			<!-- <a href="liste_pages.html">Pages</a> -->
+			<div class="content">
+				<div style="width:300px; height:42px; margin:auto; padding-bottom:10px;">
+					<img src="img/jolielist.png" alt="Logo" class="left" />
+				</div>
+				<div class="clear"></div>
+				<div id="container_products">
+				
+				</div>
+			</div>
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>

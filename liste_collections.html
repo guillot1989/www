@@ -1,0 +1,95 @@
+<html>
+	<head>
+	<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$('#load_header').load('header.html', function(){
+					$('.title_header').text('Liste des collections')
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="load_header"></div>
+		<div class="list_collection">
+
+			<div class="header">
+				<a class="button_left_list_collection" href="#"></a>
+				<a class="button_right_list_collection" href="#"></a>
+				<div class="title_header">Liste des collections</div>
+			</div>
+			
+			<div class="add_collection">
+				<div class="picto_add_collection_moins"></div>
+				<p>Ajouter une collection</p>
+			</div>
+
+			<div class="add_collection_plus">
+				<div class="picto_add_collection_plus_ok"></div>
+				<input type="text" placeholder="Ajouter une collection" />
+			</div>
+
+			
+			<!-- 
+				FDL
+				Script de récupération de la liste des collections de l'utilisateur connecté.
+				En premier lieu on récupère les données, ensuite on alimente le HTML avec.
+				
+				WebService appelé : http://api.jolielist.com/collections?user_id=8
+				
+				Flux récupéré :
+				<api type="collections">
+					<collections>
+						<collection>
+							<collection_id>26</collection_id>
+							<name>Mes favoris</name>
+							<collection_type_id>3</collection_type_id>
+							<favorite>1</favorite>
+							<creator>
+								<id>8</id>
+								<name>Steven Titren</name>
+							</creator>
+							<created_at/>
+							<cover_url>http://static.quaelead.com//collections/1/26.jpg</cover_url>
+						</collection>
+						...
+					/collections>
+				</api>
+			 --> 
+			<script>
+			
+				$.ajax({
+					//appel du web service
+					type: "GET",
+					
+					//TODO
+					//ID passé en dur !!!
+					//en attente de récupération de l'ID par la connexion
+					url: "http://api.jolielist.com/collections?user_id=8",
+					dataType: "xml",
+					//récupération des données
+					complete : function(data, status) {
+						var collection = data.responseXML;
+						var ajoutHtml = "";
+						
+						//pour chaque collection trouvée on récupère le nom et on créé un objet collection
+						$(collection).find('collection').each(function(){
+							var nom = $(this).children('name').text();
+							var idCollection = $(this).children('collection_id').text();
+							ajoutHtml += "<div class='collection_line'><a href='collection.html?user_id=8&collection_id="+idCollection+"'><p>"+nom+"</p><div class='picto_collection_line'></div></a></div>";
+							
+						});
+					
+					$(".list_collection").append(ajoutHtml);
+					}
+				});
+			</script>
+			
+		</div>
+		
+
+	</body>
+</html>

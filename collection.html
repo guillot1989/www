@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$('#load_header').load('header.html', function(){
+					$('.title_header').text('Collection')
+				});
+				var type = Math.round(Math.random()*3)+1;
+				$('.images_collection').addClass('type'+type);
+				
+				///collection/products
+				var flux='http://api.jolielist.com/collection/products?'+location.search.substring(1);
+				 $.ajax({
+				        type: "GET",
+				         url: flux,
+				       //récupération des données
+							complete : function(data, status) {
+								var collection = data.responseXML;
+								var ajoutHtml = "";
+								
+								//pour chaque collection trouvée on récupère le nom et on créé un objet collection
+								$(collection).find('product').each(function(){
+									
+									var nom = $(this).children('title').text();
+									var smallPictureIrl = $(this).children('small_picture_url').text();
+									var creatorName = $(this).children('small_picture_url').text();
+									var idCollection = $(this).children('collection_id').text();
+									
+									
+									
+								});
+							
+							$(".content").append(ajoutHtml);
+							alert("ok2");
+							
+							}
+						});
+				
+				
+
+			});
+		</script>
+	</head>
+	<body>
+		<div id="load_menu"></div>
+		<div id="content_center">
+			<div id="load_header" class="bis" rel="Collection"></div>
+			<div class="content">
+				<h1>Nom du produit</h1>
+				<div id="product_header">
+				
+					<img src="" class="left img_collection" />
+					
+					<div id="buttons_header">
+						<div class="btn left margin_right_8" style="padding:3px;height:16px;"><img src="img/cog.png" /></div>
+						<br/>
+						<h2>Créée par <span>David Briand</span></h2>
+						<div class="clear"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="load_notifs"></div>
+	</body>
+</html>
